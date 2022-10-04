@@ -17,7 +17,7 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <title>TinyApp</title>
+    <title>Dev's TinyApp</title>
   </head>
   <body>
     <main style="margin: 1em;">
@@ -27,6 +27,7 @@
           <tr>
             <th scope="col">Short URL ID</th>
             <th scope="col">Long URL</th>
+            <th scope="col">Edit</th>
             <th scope="col">Delete</th>
           </tr>
         </thead>
@@ -35,6 +36,8 @@
             <tr>
               <td><%= id %></td>
               <td><%= urls[id] %></td>
+              <td><a href = "urls/<%= id %>" >
+                <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Edit</button></a></td>
               <td><form method = "POST" action="/urls/<%= id %>/delete">
                 <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Delete</button></form>
               </td>
