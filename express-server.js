@@ -11,7 +11,6 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
  
-
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -22,7 +21,6 @@ app.get("/urls", (req, res) => {
 })
 
 app.get("/urls/new", (req, res) => {
-  //const templateVars = { id: req.params.id , longURL : urlDatabase['id'] }
   res.render('urls_new')
 })
 
@@ -31,10 +29,6 @@ app.get("/urls/:id", (req, res) => {
   res.render('urls_show', templateVars)
 })
 
-// app.get("/urls/:shortURL", (req, res) => { 
-//   res.redirect(urlDatabase[req.params.shortURL].longURL)
-// })
-
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
@@ -42,15 +36,18 @@ app.get("/hello", (req, res) => {
 app.get("/url/:shortURL", (req, res) => {
   console.log(urlDatabase)
   res.redirect(urlDatabase[req.params.shortURL]);
-  //res.send("okay")
 })
 
 app.post("/urls", (req, res) => {
-  //console.log(req.body); // Log the POST request body to the console
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
 });
+app.post("/urls/:id/delete", (req,res) => {
+  const id = req.params.id;
+  delete urlDatabase[id]
+  res.redirect('/urls')
+})
 
 
 const generateRandomString =  function() {
