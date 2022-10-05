@@ -16,7 +16,27 @@
       <div class="navbar-nav ">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        
       </div>
     </div>
+    <div class="collapse navbar-collapse"  style="display:contents!important;" id="navbarNavAltMarkup" style="float:right;">
+      <div class="navbar-nav" >
+    <% if (!username) { %>
+   
+        <form method = "POST" action="/urls/login" >
+          <input style="width: 50%;" name = "username">
+          <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px">Login</button></form>
+         
+    
+    <% } else { %>
+   
+      Logged in as <%= username %>
+      <form method = "POST" action="/urls/logout" >
+          <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px">Logout</button>
+         </form>
+  
+    <% } %>
+  </div>
+</div>
   </nav>
 </header>
