@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const bcrypt = require("bcryptjs");
 const cookieParser = require('cookie-parser')
 app.set("view engine", "ejs")
 app.use(express.urlencoded({ extended: true }));
@@ -69,34 +70,26 @@ app.get("/register", (req, res) => {
   app.post("/register", (req, res) => {
     const id = generateUid();
     const email = req.body.email;
-    const password = req.body.password;
+    const password = bcrypt.hashSync(req.body.password, 10);
     if (!email || !password) {
       return res.status(400).send("Please include email and password")
     }
     for (let userfromDB in users) {
       if (users[userfromDB].email === email) {
-  
-  
+
         return res.status(400).send("User already exists")
       }
     }
     const user = {
       id,
       email,
-      password
+      password 
     }
     users[id] = user
   
     res.cookie("user_id", id)
     res.redirect(`/urls`)
   });
-
- 
- 
-
-
-
-
 ///////////////Login Route
 app.get("/login", (req, res) => {
   const userIdFromCookie = req.cookies["user_id"];
@@ -123,7 +116,11 @@ app.post("/login", (req, res) => {
   if (!userFromDb) {
     return res.status(400).send('no user with that email found');
   }
-  if (userFromDb.password !== password) {
+  console.log(userFromDb.password)
+  console.log(password)
+
+  //if (userFromDb.password !== password) {
+  if (!bcrypt.compareSync(password, userFromDb.password, )) {
     return res.status(400).send('wrong password');
   }
   res.cookie("user_id", userFromDb.id)
