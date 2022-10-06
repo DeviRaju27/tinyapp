@@ -21,17 +21,16 @@
     </div>
     <div class="collapse navbar-collapse"  style="display:contents!important;" id="navbarNavAltMarkup" style="float:right;">
       <div class="navbar-nav" >
-    <% if (!username) { %>
-   
-        <form method = "POST" action="/urls/login" >
-          <input style="width: 50%;" name = "username">
-          <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px">Login</button></form>
-         
-    
+    <% if (!user) { %>
+      <div><a href="/register">
+      <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px">Register</button></a></div>
+      <div><a href="/login">
+        <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px;margin-left: 10px;">Login</button></a></div>
+  
     <% } else { %>
    
-      Logged in as <%= username %>
-      <form method = "POST" action="/urls/logout" >
+      Logged in as <%= user.email %>
+      <form method = "POST" action="/logout" >
           <button  type = "submit" style="color:white;background-color:#2fc509;border: 1px solid rgb(68, 0, 255); border-radius: 7px;border-color: rgb(77, 208, 20); font-size:medium; padding:8px">Logout</button>
          </form>
   
