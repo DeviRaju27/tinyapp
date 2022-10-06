@@ -63,7 +63,8 @@ app.get("/register", (req, res) => {
   const templateVars = {
     user
   }
-  return res.render('user_registration',templateVars);
+  res.render('user_registration', templateVars);
+
   })
 
   app.get("/login", (req, res) => {
@@ -89,9 +90,7 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase,
   }
   res.render('urls_index', templateVars)
-=======
-  res.render('user_registration', templateVars);
->>>>>>> feature/more
+
 })
 app.post("/register", (req, res) => {
   const id = generateUid();
@@ -103,15 +102,7 @@ app.post("/register", (req, res) => {
   for (let userfromDB in users) {
     if (users[userfromDB].email === email) {
 
-<<<<<<< HEAD
-app.get("/urls/new", (req, res) => {
-  
-  const userIdFromCookie = req.cookies["user_id"];
 
-  if(!userIdFromCookie){
-  return res.redirect("/login")
-  }
-=======
       return res.status(400).send("User already exists")
     }
   }
@@ -126,9 +117,15 @@ app.get("/urls/new", (req, res) => {
   res.redirect(`/urls`)
 });
 ///////////////Login Route
-app.get("/login", (req, res) => {
+
+app.get("/urls/new", (req, res) => {
+  
   const userIdFromCookie = req.cookies["user_id"];
->>>>>>> feature/more
+
+  if(!userIdFromCookie){
+  return res.redirect("/login")
+  }
+
   const user = users[userIdFromCookie]
   const templateVars = {
     user
@@ -211,7 +208,18 @@ app.get("/urls/new", (req, res) => {
 // get page with tiny url data
 app.get("/urls/:id", (req, res) => {  
   const userIdFromCookie = req.cookies["user_id"]
-<<<<<<< HEAD
+  const id = req.params.id;
+  const user = users[userIdFromCookie]
+  const templateVars = {
+    user,
+    id,
+    longURL: urlDatabase[id].longUrl
+  }
+  res.render('urls_show', templateVars)
+})
+
+app.get("/u/:shortURL", (req, res) => {
+ 
   const id = req.params.id; //12
  if(!userIdFromCookie){
   return res.redirect("/login") 
@@ -231,36 +239,22 @@ app.get("/urls/:id", (req, res) => {
   return res.status(401).send("not a valid url")
 })
 // redirect to long url
-app.get("/u/:shortURL", (req, res) => {
-  res.redirect(urlDatabase[req.params.shortURL]);
-=======
-  const id = req.params.id;
-  const user = users[userIdFromCookie]
-  const templateVars = {
-    user,
-    id,
-    longURL: urlDatabase[id].longUrl
-  }
-  res.render('urls_show', templateVars)
-})
 
-app.get("/u/:shortURL", (req, res) => {
-
-  const id = req.params.shortURL;
-  return res.redirect(urlDatabase[id].longUrl)
->>>>>>> feature/more
-})
 app.post("/urls", (req, res) => {
-<<<<<<< HEAD
-  const userIdFromCookie = req.cookies["user_id"]
-  if(userIdFromCookie){
-    const shortURL = generateRandomString();
-    urlDatabase[shortURL] = req.body.longURL;
-    return res.redirect(`/urls/${shortURL}`);
-  } else {
-    return res.status(401).send("you must be logged in to do that")
+  const shortURL = generateRandomString();
+  const userIdFromCookie = req.cookies["user_id"];
+  const longUrlFromUser = req.body.longURL
+
+  const newUrl = {
+    longUrl: longUrlFromUser,
+    userID: userIdFromCookie
   }
+
+  urlDatabase[shortURL] = newUrl;
+
+  res.redirect(`/urls/${shortURL}`);
 });
+  
 
 app.post("/register", (req, res) => {
   const id = generateUid();
@@ -310,21 +304,7 @@ app.post("/logout", (req, res) => {
   res.redirect("/login")
 })
 
-=======
-  const shortURL = generateRandomString();
-  const userIdFromCookie = req.cookies["user_id"];
-  const longUrlFromUser = req.body.longURL
 
-  const newUrl = {
-    longUrl: longUrlFromUser,
-    userID: userIdFromCookie
-  }
-
-  urlDatabase[shortURL] = newUrl;
-
-  res.redirect(`/urls/${shortURL}`);
-});
->>>>>>> feature/more
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
   delete urlDatabase[id]
@@ -337,26 +317,16 @@ app.post("/urls/:id/edit", (req, res) => {
   res.redirect("/urls")
 })
 
-<<<<<<< HEAD
+
 app.post("/urls/login", (req, res) => {
   res.cookie('username', req.body.username)
   res.redirect("/urls")
 })
 
 
-const generateRandomString = function () {
-  return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
-}
-const generateUid =  function() {
-  return Math.floor((1 + Math.random()) * 0x1000000).toString(8).substring(1,5)
-}
-=======
-////////////////////////////////////////////////////////////////////////////////////////////////
->>>>>>> feature/more
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
 
 
