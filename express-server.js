@@ -1,11 +1,18 @@
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
 const bcrypt = require("bcryptjs");
-const cookieParser = require('cookie-parser')
+const { getUserByEmail } = require('./helpers');
+var cookieSession = require('cookie-session')
+const app = express();
+const PORT = 8080;
 app.set("view engine", "ejs")
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieSession({
+  name: 'session',
+  keys: ['myKey'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
+
 
 const urlDatabase = {
   b2xVn2: {
@@ -31,18 +38,25 @@ const users = {
   },
 };
 ////fUNCTION TO CHECK EXISTING USER
-const findUserByEmail = (email) => {
-  for (const userId in users) {
-    const userFromDb = users[userId];
+// const getUserByEmail = (email, database) => {
+//   for (const user in database) {
+//     const userFromDb = database[user];
 
-    if (userFromDb.email === email) {
-      // we found our user!!
-      return userFromDb;
-    }
-  }
+//     if (userFromDb.email === email) {
+//       return userFromDb;
+//     }
+//   }
+//   return null;
+// };
 
-  return null;
-};
+// const ggetUserByEmail = (email, database) => {
+//   for (let user in database) {
+//     if (database[user].email === email) {
+//       return database[user];
+//     }
+//   }
+//   return undefined;
+// };
 ////////Function for short URL
 const generateRandomString = function () {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
@@ -55,7 +69,7 @@ const generateUid = function () {
 
 /////////////Register Route
 app.get("/register", (req, res) => {
-  const userIdFromCookie = req.cookies["user_id"];
+  const userIdFromCookie = req.session.user_id;
   
   if(userIdFromCookie){
      return res.redirect("/urls")
@@ -74,11 +88,10 @@ app.get("/register", (req, res) => {
     if (!email || !password) {
       return res.status(400).send("Please include email and password")
     }
-    for (let userfromDB in users) {
-      if (users[userfromDB].email === email) {
 
-        return res.status(400).send("User already exists")
-      }
+    const userFromDb = getUserByEmail(email, users);
+    if(userFromDb){
+      return res.status(400).send("User already exists")
     }
     const user = {
       id,
@@ -87,12 +100,13 @@ app.get("/register", (req, res) => {
     }
     users[id] = user
   
-    res.cookie("user_id", id)
+   
+    req.session.user_id = id;
     res.redirect(`/urls`)
   });
 ///////////////Login Route
 app.get("/login", (req, res) => {
-  const userIdFromCookie = req.cookies["user_id"];
+  const userIdFromCookie = req.session.user_id;
  if(userIdFromCookie){
   return res.redirect("/urls")
  }
@@ -111,7 +125,7 @@ app.post("/login", (req, res) => {
   if (!email || !password) {
     return res.status(400).send('please include email AND password');
   }
-  const userFromDb = findUserByEmail(email);
+  const userFromDb = getUserByEmail(email, users);
 
   if (!userFromDb) {
     return res.status(400).send('no user with that email found');
@@ -123,12 +137,13 @@ app.post("/login", (req, res) => {
   if (!bcrypt.compareSync(password, userFromDb.password, )) {
     return res.status(400).send('wrong password');
   }
-  res.cookie("user_id", userFromDb.id)
+ 
+  req.session.user_id = userFromDb.id;
   res.redirect("/urls")
   return
 })
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id')
+  req.session = null
   res.redirect("/login")
 })
 
@@ -138,7 +153,7 @@ app.post("/logout", (req, res) => {
 app.get("/urls", (req, res) => {
   console.log("user db", users)
   console.log("url db", urlDatabase)
-  const userIdFromCookie = req.cookies["user_id"];
+  const userIdFromCookie = req.session.user_id;
   if (userIdFromCookie) {
     const user = users[userIdFromCookie]
 
@@ -155,7 +170,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
 
 
-  const userIdFromCookie = req.cookies["user_id"];
+  const userIdFromCookie = req.session.user_id
   if (userIdFromCookie) {
     const user = users[userIdFromCookie]
 
@@ -169,7 +184,7 @@ app.get("/urls/new", (req, res) => {
 
 // get page with tiny url data
 app.get("/urls/:id", (req, res) => {  
-  const userIdFromCookie = req.cookies["user_id"]
+  const userIdFromCookie = req.session.user_id;
   const id = req.params.id;
   const user = users[userIdFromCookie]
   const templateVars = {
@@ -192,7 +207,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-  const userIdFromCookie = req.cookies["user_id"];
+  const userIdFromCookie = req.session.user_id;
   const longUrlFromUser = req.body.longURL
 
   const newUrl = {
