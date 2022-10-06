@@ -26,15 +26,22 @@ const users = {
 
 app.get("/register", (req, res) => {
   const userIdFromCookie = req.cookies["user_id"];
+  
+  if(userIdFromCookie){
+     return res.redirect("/urls")
+  }
   const user = users[userIdFromCookie]
   const templateVars = {
     user
   }
-  res.render('user_registration',templateVars);
+  return res.render('user_registration',templateVars);
   })
 
   app.get("/login", (req, res) => {
     const userIdFromCookie = req.cookies["user_id"];
+   if(userIdFromCookie){
+    return res.redirect("/urls")
+   }
     const user = users[userIdFromCookie]
     const templateVars = {
       user
@@ -57,29 +64,41 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   
-  
   const userIdFromCookie = req.cookies["user_id"];
-  const user = users[userIdFromCookie]
 
+  if(!userIdFromCookie){
+  return res.redirect("/login")
+  }
+  const user = users[userIdFromCookie]
   const templateVars = {
     user
   }
   res.render('urls_new', templateVars)
 })
 
-app.get("/urls/:id", (req, res) => {
+// get page with tiny url data
+app.get("/urls/:id", (req, res) => {  
   const userIdFromCookie = req.cookies["user_id"]
-  const id = req.params.id;
-  const user = users[userIdFromCookie]
-  const templateVars = {
-    user,
-    id,
-    longURL: urlDatabase[req.params.id]
-  }
-  res.render('urls_show', templateVars)
+  const id = req.params.id; //12
+ if(!userIdFromCookie){
+  return res.redirect("/login") 
+ }
+  for(const url in urlDatabase){
+   if(url === id){
+    const userIdFromCookie = req.cookies["user_id"];
+    const user = users[userIdFromCookie]
+    const templateVars = {
+      user,
+      id,
+      longURL: urlDatabase[url]
+    }
+    return res.render('urls_show', templateVars)
+   } 
+  } 
+  return res.status(401).send("not a valid url")
 })
-
-app.get("/url/:shortURL", (req, res) => {
+// redirect to long url
+app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
 })
 
@@ -87,9 +106,14 @@ app.get("/url/:shortURL", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
+  const userIdFromCookie = req.cookies["user_id"]
+  if(userIdFromCookie){
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = req.body.longURL;
+    return res.redirect(`/urls/${shortURL}`);
+  } else {
+    return res.status(401).send("you must be logged in to do that")
+  }
 });
 
 app.post("/register", (req, res) => {
@@ -130,7 +154,6 @@ app.post("/login", (req, res) => {
       return res.status(403).send("Incorrect password")
     } else {
       res.cookie("user_id",users[userfromDB].id)
-     // console.log(users[userfromDB].id)
       return res.redirect("/urls")
     }
   }
@@ -138,7 +161,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id')
-  res.redirect("/urls")
+  res.redirect("/login")
 })
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -157,7 +180,6 @@ app.post("/urls/login", (req, res) => {
   res.cookie('username', req.body.username)
   res.redirect("/urls")
 })
-
 
 
 const generateRandomString = function () {
