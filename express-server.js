@@ -66,7 +66,16 @@ const generateRandomString = function () {
 const generateUid = function () {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(8).substring(1, 5)
 }
+///Any route
+app.get("/", (req, res) => {
 
+  //if not logged in
+  if (!req.session.user_id) {
+    res.redirect('/login');
+    return;
+  }
+  res.redirect('/urls');
+});
 /////////////Register Route
 app.get("/register", (req, res) => {
   const userIdFromCookie = req.session.user_id;
@@ -198,8 +207,6 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
     res.status(404);
-   
-    return;
   }
   res.redirect(urlDatabase[req.params.shortURL].longUrl);
 })
