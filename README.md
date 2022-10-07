@@ -9,7 +9,8 @@
  > - Web Server: Node.js 
  > - Middleware: Express
   > - Template Engine: EJS
-
+  > -  bcryptjs
+ > - cookie-session
 
  ---------------
 ### <ins>  **Getting started** </ins>
