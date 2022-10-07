@@ -43,6 +43,11 @@
  - Only registered users have access to their own saved shortened URLS
  - Anyone can visit short URLs
 -------------
+ ### <ins>  **Final Project** </ins>
+
+ !["Screenshot of Login Page"](https://github.com/DeviRaju27/tinyapp/blob/main/docs/login-page.png)
+ !["Screenshot of URLs Page"](https://github.com/DeviRaju27/tinyapp/blob/main/docs/urls.-page.png)
+ !["Screenshot of Short URL Page"](https://github.com/DeviRaju27/tinyapp/blob/main/docs/tinyURL-page.png)
 
 
 
