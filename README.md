@@ -16,8 +16,8 @@
 - Install all dependencies (using the `npm install` command).
 - Run the development web server using the `node express_server.js` command.
 - Regsiter to the app using an email and password
-------------
-### <ins> **User specific functionalities </ins>
+------------------
+### <ins>  **User Specific Functionalities** </ins>
 - Create new Short URLs
 - Edit your saved URLs 
 - Delete saved URLs
