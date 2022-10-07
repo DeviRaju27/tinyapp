@@ -6,14 +6,12 @@ const app = express();
 const PORT = 8080;
 app.set("view engine", "ejs")
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 app.use(cookieSession({
   name: 'session',
   keys: ['myKey'],
-  maxAge:  60 * 60 * 1000 
+  maxAge: 60 * 60 * 1000
 }))
-
-
-
 const urlDatabase = {
   b2xVn2: {
     longUrl: "http://www.lighthouselabs.ca",
@@ -24,7 +22,6 @@ const urlDatabase = {
     userID: "4574",
   }
 };
-
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -76,7 +73,6 @@ app.post("/register", (req, res) => {
   if (!email || !password) {
     return res.status(400).send("Please include email and password")
   }
-
   const userFromDb = getUserByEmail(email, users);
   if (userFromDb) {
     return res.status(400).send("User already exists")
@@ -87,8 +83,6 @@ app.post("/register", (req, res) => {
     password
   }
   users[id] = user
-
-
   req.session.user_id = id;
   res.redirect(`/urls`)
 });
@@ -127,13 +121,14 @@ app.post("/logout", (req, res) => {
   req.session = null
   res.redirect("/login")
 })
+
+
 /////////URLS Route
 app.get("/urls", (req, res) => {
   console.log("user db", users)
   console.log("url db", urlDatabase)
   const userIdFromCookie = req.session.user_id;
   const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase)
-  
   if (userIdFromCookie) {
     const user = users[userIdFromCookie]
     const templateVars = {
@@ -145,9 +140,8 @@ app.get("/urls", (req, res) => {
   }
   return res.redirect('/login')
 })
+
 app.get("/urls/new", (req, res) => {
-
-
   const userIdFromCookie = req.session.user_id
   if (userIdFromCookie) {
     const user = users[userIdFromCookie]
@@ -165,16 +159,14 @@ app.get("/urls/:id", (req, res) => {
   const userIdFromCookie = req.session.user_id;
   const id = req.params.id;
   const user = users[userIdFromCookie]
-  // console.log("useridfrom cookie", userIdFromCookie);
-  // console.log("user id from urldb",urlDatabase[id].userID)
-  if(!userIdFromCookie){
+  if (!userIdFromCookie) {
     return res.status(404).send("please login to access this page");
   }
-  if(!urlDatabase[id]){
+  if (!urlDatabase[id]) {
     return res.status(404).send("Invalid short URL");
   }
-  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
-  if(urlsDbForUser[id]=== undefined){
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase)
+  if (urlsDbForUser[id] === undefined) {
     return res.status(404).send("you don't have permission to access this page");
   }
   const templateVars = {
@@ -202,45 +194,44 @@ app.post("/urls", (req, res) => {
     longUrl: longUrlFromUser,
     userID: userIdFromCookie
   }
-
   urlDatabase[shortURL] = newUrl;
 
   res.redirect(`/urls/${shortURL}`);
 });
-app.post("/urls/:id/edit", (req, res) => {
+
+app.post("/urls/:id", (req, res) => {
   const id = req.params.id;
   const userIdFromCookie = req.session.user_id;
-  if(!userIdFromCookie){
+  if (!userIdFromCookie) {
     return res.status(404).send("please login to access this page");
   }
-  if(!urlDatabase[id]){
+  if (!urlDatabase[id]) {
     return res.status(404).send("Invalid short URL");
   }
-  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
-  if(urlsDbForUser[id]=== undefined){
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase)
+  if (urlsDbForUser[id] === undefined) {
     return res.status(404).send("you don't have permission to access this page");
   }
   urlDatabase[id].longUrl = req.body.longURL;
   res.redirect("/urls")
 })
+
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
   const userIdFromCookie = req.session.user_id;
-  if(!userIdFromCookie){
+  if (!userIdFromCookie) {
     return res.status(404).send("please login to access this page");
   }
-  if(!urlDatabase[id]){
+  if (!urlDatabase[id]) {
     return res.status(404).send("Invalid short URL");
   }
-  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
-  if(urlsDbForUser[id]=== undefined){
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase)
+  if (urlsDbForUser[id] === undefined) {
     return res.status(404).send("you don't have permission to access this page");
   }
   delete urlDatabase[id]
   res.redirect('/urls')
 })
-
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

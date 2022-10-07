@@ -1,0 +1,151 @@
+.img{
+  vertical-align: middle;
+  border-style: none;
+  background: url("/images/bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  
+  
+}
+.inside-pages{
+
+}
+.header .navbar-main{
+  background-color: #212529;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff; }
+body{
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: normal;
+  color: gray;
+  
+  z-index: 0;
+  padding: 0;
+}
+.navbar-dark .navbar-nav .nav-link{
+  color:antiquewhite!important;
+}
+body:after .img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  content: '';
+  background: #000;
+  opacity: .3;
+  z-index: -1;
+}
+.ftco h2{
+  margin-top: 5rem;
+}
+ .navbar-inline{
+ 
+  font-size: 25px!important;
+  margin-left: 20px;
+}
+.header-buttons
+{
+  background: border-box;
+  color: #b8aaaa;
+  padding: 10px;
+  border:none;
+}
+.header-logout
+{
+  background: border-box;
+  color: #fff;
+  padding: 0px 20px;
+  margin-left: 20px;
+  /* border: 10px black; */
+  border-radius: 10px;
+  border-color: mintcream;
+}
+.header-text{
+  color: #ffffffa1;
+    padding: 5px;
+}
+.justify-content-center {
+  -webkit-box-pack: center !important;
+  -ms-flex-pack: center !important;
+  justify-content: center !important;
+}
+ .float-section
+{
+
+    margin: 10px 0;
+    border-radius: 30px;
+}
+.color-fff{
+  color: #fff;
+}
+.container-div {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.ftco-section {
+  padding: 7em 0;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-inline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.form-inline .form-check {
+  width: 100%;
+}

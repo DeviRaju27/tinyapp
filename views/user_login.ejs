@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <link rel="stylesheet" href="../css/main.css">
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -15,21 +16,45 @@
     />
     <title>Dev's TinyApp</title>
   </head>
-  <body>
+  <body class = "img">
 <%- include('./partials/_header') %>
 
-    <main style="margin: 1em;">
-      <h3>Login page</h3>
-      <div class="card-body">
-        
-        
-        <form method = "POST" action="/login">
-          <input style="width: 50%;" name = "email" type = "email"></br></br>
-          <input style="width: 50%;" name = "password" type = "password"></br></br>
-          <button type = "submit" style="color:white;background-color:#464ce7;border: 0px solid rgb(68, 0, 255); border-radius: 7px;">Login</button></form>
-          <h5 class="card-title">Not a member? <a href = '/register'>Register here!</a></h5>
+
+<section class="ftco">
+  <div class="container">
+    <div>
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center mb-5">
+        <h2 class="heading-section color-fff">Login here!</h2>
       </div>
-    </main>
+    </div>
+    <div class="row justify-content-center ">
+      <div class="col-md-6 col-lg-4">
+        <div class="login-wrap p-0 float-section">
+          
+          <form method = "POST" action="/login">
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="email" name = "email" required>
+            </div>
+            <div class="form-group">
+              <input id="password-field" name = "password" type = "password" class="form-control" placeholder="Password" required>
+              <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-control btn btn-primary submit px-3">Log In</button>
+            </div>
+            
+          </form>
+          
+          <h5 class="mb-4 text-center">Not a member yet?  <a class ="color-fff" href= "./register">Register now!</a></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+  
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
