@@ -20,12 +20,13 @@
     />
     <title>Dev's TinyApp</title>
   </head>
-  <body class = "inside-pages">
+  <body class = "inside-pages justify-content-center">
     <%- include('./partials/_header') %>
-    <main style="margin: 1em;">
+   
+    <main class="main-pages" >
       <h3>My URLs</h3>
       
-      <table class="table">
+      <table class="table main-pages-table">
         <thead>
           <tr>
             <th scope="col">Short URL ID</th>
@@ -41,9 +42,9 @@
               <td><%= url %></td>
               <td><%= urlsDbForUser[url].longUrl %></td>
               <td><a href = "urls/<%= url %>" >
-                <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Edit</button></a></td>
+                <button type = "submit" class="user-edit-button">Edit</button></a></td>
               <td><form method = "POST" action="/urls/<%= url %>/delete">
-                <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Delete</button></form>
+                <button type = "submit"class="user-delete-button">Delete</button></form>
               </td>
             </tr>
           <% } %>

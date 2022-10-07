@@ -3,17 +3,25 @@
 ##### TinyApp is a Web Application built on Node and Express which takes a regular URL and transforms it into an encoded version, which redirects back to the original URL!
 
 ----------
- ### <ins>  **Techologies** </ins>
- 
+ ### <ins>  **Dependencies** </ins>
+
 
  > - Web Server: Node.js 
  > - Middleware: Express
   > - Template Engine: EJS
 
 
-
  ---------------
-
+### <ins>  **Getting started** </ins>
+- Install all dependencies (using the `npm install` command).
+- Run the development web server using the `node express_server.js` command.
+- Regsiter to the app using an email and password
+------------
+### <ins> **User specific functionalities </ins>
+- Create new Short URLs
+- Edit your saved URLs 
+- Delete saved URLs
+-----------------
  ### <ins>  **Features** </ins>
 
 1. Secure User Registration and Login
@@ -35,12 +43,9 @@
  - Anyone can visit short URLs
 -------------
 
-### User specific functionalities
-- Create new Short URLs
-- Edit your saved URLs 
-- Delete saved URLs
 
--------------
+
+
 
 
 

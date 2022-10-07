@@ -20,22 +20,28 @@
   <body class = "inside-pages">
     <%- include('partials/_header') %>
 
-    <main style="margin: 1em;">
-      <h3>Create TinyURL</h3>
-      <form class="form-inline" action="/urls" method="POST">
-        <div class="form-group mb-2">
-          <label for="longURL">Enter a URL:</label>
+ 
+    <div class="card text-center main-pages">
+     
+      <div class="card-body">
+        <h5 class="card-title">Create a new tiny URL </h5>
+        <p class="card-text">
+          Short URL ID: <a href=""></a>
+        </p>
+        <form method = "POST" action="/urls">
+         
           <input
             class="form-control"
             type="text"
             name="longURL"
-            placeholder="http://"
-            style="width: 300px; margin: 1em"
+            placeholder="https://"
+          style="width:50%;display: inline-grid;"
           />
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
-    </main>
+          <button type = "submit" style="color:white;background-color:#408196;border: 0px solid rgb(68, 0, 255); border-radius: 7px;padding: 7px; ">Create URL</button></form>
+        
+      </div>
+      <div class="card-footer text-muted"></div>
+    </div>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
