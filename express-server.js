@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { getUserByEmail } = require('./helpers');
+const { getUserByEmail, urlsForUser } = require('./helpers');
 var cookieSession = require('cookie-session')
 const app = express();
 const PORT = 8080;
@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
   keys: ['myKey'],
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  maxAge:  60 * 60 * 1000 
 }))
 
 
@@ -37,31 +37,10 @@ const users = {
     password: "dishwasher-funk",
   },
 };
-////fUNCTION TO CHECK EXISTING USER
-// const getUserByEmail = (email, database) => {
-//   for (const user in database) {
-//     const userFromDb = database[user];
 
-//     if (userFromDb.email === email) {
-//       return userFromDb;
-//     }
-//   }
-//   return null;
-// };
-
-// const ggetUserByEmail = (email, database) => {
-//   for (let user in database) {
-//     if (database[user].email === email) {
-//       return database[user];
-//     }
-//   }
-//   return undefined;
-// };
-////////Function for short URL
 const generateRandomString = function () {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
 }
-
 ///////Function for User ID
 const generateUid = function () {
   return Math.floor((1 + Math.random()) * 0x1000000).toString(8).substring(1, 5)
@@ -79,9 +58,9 @@ app.get("/", (req, res) => {
 /////////////Register Route
 app.get("/register", (req, res) => {
   const userIdFromCookie = req.session.user_id;
-  
-  if(userIdFromCookie){
-     return res.redirect("/urls")
+
+  if (userIdFromCookie) {
+    return res.redirect("/urls")
   }
   const user = users[userIdFromCookie]
   const templateVars = {
@@ -89,43 +68,42 @@ app.get("/register", (req, res) => {
   }
   res.render('user_registration', templateVars);
 
-  })
-  app.post("/register", (req, res) => {
-    const id = generateUid();
-    const email = req.body.email;
-    const password = bcrypt.hashSync(req.body.password, 10);
-    if (!email || !password) {
-      return res.status(400).send("Please include email and password")
-    }
+})
+app.post("/register", (req, res) => {
+  const id = generateUid();
+  const email = req.body.email;
+  const password = bcrypt.hashSync(req.body.password, 10);
+  if (!email || !password) {
+    return res.status(400).send("Please include email and password")
+  }
 
-    const userFromDb = getUserByEmail(email, users);
-    if(userFromDb){
-      return res.status(400).send("User already exists")
-    }
-    const user = {
-      id,
-      email,
-      password 
-    }
-    users[id] = user
-  
-   
-    req.session.user_id = id;
-    res.redirect(`/urls`)
-  });
+  const userFromDb = getUserByEmail(email, users);
+  if (userFromDb) {
+    return res.status(400).send("User already exists")
+  }
+  const user = {
+    id,
+    email,
+    password
+  }
+  users[id] = user
+
+
+  req.session.user_id = id;
+  res.redirect(`/urls`)
+});
 ///////////////Login Route
 app.get("/login", (req, res) => {
   const userIdFromCookie = req.session.user_id;
- if(userIdFromCookie){
-  return res.redirect("/urls")
- }
+  if (userIdFromCookie) {
+    return res.redirect("/urls")
+  }
   const user = users[userIdFromCookie]
   const templateVars = {
     user
   }
-  res.render('user_login',templateVars);
-  })
-
+  res.render('user_login', templateVars);
+})
 
 app.post("/login", (req, res) => {
   const email = req.body.email;
@@ -135,18 +113,12 @@ app.post("/login", (req, res) => {
     return res.status(400).send('please include email AND password');
   }
   const userFromDb = getUserByEmail(email, users);
-
   if (!userFromDb) {
     return res.status(400).send('no user with that email found');
   }
-  console.log(userFromDb.password)
-  console.log(password)
-
-  //if (userFromDb.password !== password) {
-  if (!bcrypt.compareSync(password, userFromDb.password, )) {
+  if (!bcrypt.compareSync(password, userFromDb.password,)) {
     return res.status(400).send('wrong password');
   }
- 
   req.session.user_id = userFromDb.id;
   res.redirect("/urls")
   return
@@ -155,26 +127,23 @@ app.post("/logout", (req, res) => {
   req.session = null
   res.redirect("/login")
 })
-
-
 /////////URLS Route
-
 app.get("/urls", (req, res) => {
   console.log("user db", users)
   console.log("url db", urlDatabase)
   const userIdFromCookie = req.session.user_id;
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase)
+  
   if (userIdFromCookie) {
     const user = users[userIdFromCookie]
-
     const templateVars = {
-    user,
-    users,
-    urlDatabase
-  }
+      user,
+      users,
+      urlsDbForUser
+    }
     return res.render('urls_index', templateVars)
   }
   return res.redirect('/login')
-
 })
 app.get("/urls/new", (req, res) => {
 
@@ -191,26 +160,38 @@ app.get("/urls/new", (req, res) => {
   return res.redirect('/login')
 })
 
-// get page with tiny url data
-app.get("/urls/:id", (req, res) => {  
+// Route for short URL page
+app.get("/urls/:id", (req, res) => {
   const userIdFromCookie = req.session.user_id;
   const id = req.params.id;
   const user = users[userIdFromCookie]
+  // console.log("useridfrom cookie", userIdFromCookie);
+  // console.log("user id from urldb",urlDatabase[id].userID)
+  if(!userIdFromCookie){
+    return res.status(404).send("please login to access this page");
+  }
+  if(!urlDatabase[id]){
+    return res.status(404).send("Invalid short URL");
+  }
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
+  if(urlsDbForUser[id]=== undefined){
+    return res.status(404).send("you don't have permission to access this page");
+  }
   const templateVars = {
     user,
     id,
-    longURL: urlDatabase[id].longUrl
+    longURL: urlsDbForUser[id].longUrl
   }
   res.render('urls_show', templateVars)
 })
 
+// Route to redirect to long URL
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
     res.status(404);
   }
   res.redirect(urlDatabase[req.params.shortURL].longUrl);
 })
-
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
@@ -226,22 +207,38 @@ app.post("/urls", (req, res) => {
 
   res.redirect(`/urls/${shortURL}`);
 });
-  
-
-app.post("/urls/:id/delete", (req, res) => {
-  const id = req.params.id;
-  delete urlDatabase[id]
-  res.redirect('/urls')
-})
-
 app.post("/urls/:id/edit", (req, res) => {
   const id = req.params.id;
+  const userIdFromCookie = req.session.user_id;
+  if(!userIdFromCookie){
+    return res.status(404).send("please login to access this page");
+  }
+  if(!urlDatabase[id]){
+    return res.status(404).send("Invalid short URL");
+  }
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
+  if(urlsDbForUser[id]=== undefined){
+    return res.status(404).send("you don't have permission to access this page");
+  }
   urlDatabase[id].longUrl = req.body.longURL;
   res.redirect("/urls")
 })
-
-
-
+app.post("/urls/:id/delete", (req, res) => {
+  const id = req.params.id;
+  const userIdFromCookie = req.session.user_id;
+  if(!userIdFromCookie){
+    return res.status(404).send("please login to access this page");
+  }
+  if(!urlDatabase[id]){
+    return res.status(404).send("Invalid short URL");
+  }
+  const urlsDbForUser = urlsForUser(userIdFromCookie, urlDatabase) 
+  if(urlsDbForUser[id]=== undefined){
+    return res.status(404).send("you don't have permission to access this page");
+  }
+  delete urlDatabase[id]
+  res.redirect('/urls')
+})
 
 
 

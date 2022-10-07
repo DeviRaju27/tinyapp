@@ -31,27 +31,21 @@
             <th scope="col">Long URL</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
-            
-           
           </tr>
         </thead>
         <tbody>
          
-          <% for (const url in urlDatabase) { %>
-            <% if (user.id === urlDatabase[url].userID){ %>
+          <% for (const url in urlsDbForUser) { %>
             <tr>
               <td><%= url %></td>
-              <td><%= urlDatabase[url].longUrl %></td>
+              <td><%= urlsDbForUser[url].longUrl %></td>
               <td><a href = "urls/<%= url %>" >
                 <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Edit</button></a></td>
               <td><form method = "POST" action="/urls/<%= url %>/delete">
                 <button type = "submit" style="color:red; background-color:white;border: 1px solid red; border-radius: 7px;">Delete</button></form>
               </td>
             </tr>
-        
-            <% } %>
           <% } %>
-          
         </tbody>
       </table>
    

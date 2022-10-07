@@ -9,4 +9,14 @@ const getUserByEmail = (email, database) => {
   return undefined;
 };
 
-module.exports = { getUserByEmail }
+const urlsForUser = (id, database) => {
+  const userUrls = {};
+  for (let item in database) {
+    if (database[item].userID === id) {
+      userUrls[item] = database[item];
+    }
+  }
+  return userUrls;
+};
+
+module.exports = { getUserByEmail , urlsForUser }
