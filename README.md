@@ -14,7 +14,7 @@
  ---------------
 ### <ins>  **Getting started** </ins>
 - Install all dependencies (using the `npm install` command).
-- Run the development web server using the `node express_server.js` command.
+- Run the development web server using the `node express_server.js` OR `npm start` command.
 - Regsiter to the app using an email and password
 ------------------
 ### <ins>  **User Specific Functionalities** </ins>
